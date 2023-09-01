@@ -1,0 +1,35 @@
+# Copyright VMware, Inc.
+# SPDX-License-Identifier: APACHE-2.0
+
+version: '2'
+services:
+  mariadb:
+    image: docker.io/bitnami/mariadb:10.6
+    container_name: mediawiki-mariadb-1
+    volumes:
+      - './mariadb_data:/bitnami/mariadb'
+
+  mediawiki:
+    image: docker.io/bitnami/mediawiki:1.40.0
+    container_name: mediawiki-mediawiki-1
+    user: root
+    ports:
+      - '80:8080'
+      - '443:8443'
+    environment:
+      - MW_INSTALL_PATH=/opt/bitnami/mediawiki
+      - MW_ELASTICSEARCH_HOSTS=mediawiki-elasticsearch-1
+    volumes:
+      - './docker-entrypoint-init.d:/docker-entrypoint-init.d'
+      - './mediawiki_data:/bitnami/mediawiki'
+      - './mediawiki_data_extra/LocalSettingsExtra.php:/opt/bitnami/mediawiki/LocalSettingsExtra.php'
+      - './mediawiki_data_extra/extensions:/opt/bitnami/mediawiki/extensions_extra'
+
+  elasticsearch:
+    image: docker.io/bitnami/elasticsearch:7.10.2
+    container_name: mediawiki-elasticsearch-1
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    volumes:
+      - './elasticsearch_data:/bitnami/elasticsearch/data'
