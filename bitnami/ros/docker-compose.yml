@@ -1,0 +1,11 @@
+version: '2'
+services:
+
+  ros:
+    build: ./build
+    image: ros:noetic-custom
+    container_name: rosmaster
+    volumes:
+      - './ros_data:/root/catkin_ws'
+    command: roscore
+
